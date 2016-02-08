@@ -1,4 +1,5 @@
 var CryptoJS = require('crypto-js');
+var Url = require('url')
 // digest auth request
 // by Jamie Perkins
 
@@ -9,6 +10,9 @@ function digestAuthRequest(method, url, username, password) {
 
 	var self = this;
 
+    const { path } = Url.parse(url)
+    this.path = path
+  
 	this.scheme = null; // we just echo the scheme, to allow for 'Digest', 'X-Digest', 'JDigest' etc
 	this.nonce = null; // server issued nonce
 	this.realm = null; // server issued realm
@@ -158,7 +162,7 @@ function digestAuthRequest(method, url, username, password) {
 			'username="'+username+'", '+
 			'realm="'+self.realm+'", '+
 			'nonce="'+self.nonce+'", '+
-			'uri="'+url+'", '+
+			'uri="'+self.path+'", '+
 			'response="'+self.response+'", '+
 			'opaque="'+self.opaque+'", '+
 			'qop='+self.qop+', '+
@@ -212,6 +216,7 @@ function digestAuthRequest(method, url, username, password) {
 	}
 	// hash response based on server challenge
 	this.formulateResponse = function() {
+      var url = self.path
 		var HA1 = CryptoJS.MD5(username+':'+self.realm+':'+password).toString();
 		var HA2 = CryptoJS.MD5(method+':'+url).toString();
 		var response = CryptoJS.MD5(HA1+':'+
