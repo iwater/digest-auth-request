@@ -1,3 +1,4 @@
+var CryptoJS = require('crypto-js');
 // digest auth request
 // by Jamie Perkins
 
@@ -255,3 +256,5 @@ function digestAuthRequest(method, url, username, password) {
 	}
 	this.version = function() { return '0.6.1' }
 }
+
+module.exports = digestAuthRequest
